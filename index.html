@@ -3,19 +3,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Imperva ABP AWS Connector Lab</title>
 
-  <title>Imperva ABP Connector Lab</title>
-
-  <!-- Imperva ABP JavaScript Challenge -->
-  <script type="text/javascript"
-          src="/abp-challenge.js"
-          async></script>
+  <!-- Imperva ABP JavaScript -->
+  <script src="/abp-challenge.js" async></script>
 </head>
 <body>
   <h1>Imperva ABP AWS Connector Lab</h1>
-  <p>GitHub Pages origin is working.</p>
-  <p id="status">ABP integration pending</p>
+  <p>GitHub Pages frontend served through CloudFront A.</p>
+
+  <h2>Authentication API Test</h2>
+  <p>Frontend: abp-lab.kzhtestingcwaf.com</p>
+  <p>API: api-lab.kzhtestingcwaf.com</p>
+
+  <button id="login" type="button">Test Mock Login</button>
+  <pre id="result">Ready to test.</pre>
+
+  <script>
+    document.getElementById("login").addEventListener(
+      "click", async () => {
+        const result = document.getElementById("result");
+        result.textContent = "Sending POST to CloudFront B...";
+
+        try {
+          const response = await fetch(
+            "https://api-lab.kzhtestingcwaf.com/authn/v1/datastore",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                test: "abp-lab",
+                action: "mock-login"
+              })
+            }
+          );
+
+          const body = await response.json();
+
+          result.textContent = JSON.stringify({
+            httpStatus: response.status,
+            response: body
+          }, null, 2);
+        } catch (error) {
+          result.textContent =
+            "Request failed: " + error.message;
+        }
+      }
+    );
+  </script>
 </body>
 </html>
